@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>CS_NEEP</title>
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+		<style>
+			#image {
+				width: 200px; /* 初始宽度 */
+				height: auto; /* 高度自动调整 */
+				transition: all 0.5s ease; /* 添加平滑过渡效果 */
+			}
+		</style>
+	</head>
+	<body>
+		<img id="image" src="./1.png" alt="示例图片" />
+		<script>
+			$("#image").hover(
+				function() {
+					$(this).animate({
+						width: "300px" 
+					}, 500); 
+				},
+				function() {
+					$(this).animate({
+						width: "200px" 
+					}, 500); 
+				}
+			);
+		</script>
+	</body>
+</html>
