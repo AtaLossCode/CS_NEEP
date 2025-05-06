@@ -174,4 +174,8 @@ export default {
 .right-col > .module-box:nth-child(3) {
   flex: 1;
 }
+
+.compare-box{
+  border:white;
+}
 </style>
