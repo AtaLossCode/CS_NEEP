@@ -56,6 +56,7 @@ export default {
   justify-content: center;
   align-items: center;
   gap: 20px;
+  background-color: #F5F5F5;
 }
 
 /* 单个模块卡片 */
@@ -63,7 +64,7 @@ export default {
   width: 100%;
   height:85%;
   flex: 1;
-  background: #0e1c3f;
+  background: white;
   border-radius: 16px;
   padding: 22px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
@@ -80,7 +81,7 @@ export default {
   position: relative;
   padding-left: 20px;
   font-size: 26px;
-  color: #ffffff;
+  color: #0050B3;
 }
 .title::before {
   content: '';
@@ -89,7 +90,7 @@ export default {
   top: 6px;
   width: 4px;
   height: 22px;
-  background-color: #3e7bff;
+  background-color: #0050B3;
   border-radius: 2px;
 }
 
@@ -104,7 +105,7 @@ export default {
 
 /* 渐变数字 */
 .value {
-  background: linear-gradient(90deg, #3e7bff, #8ac0ff);
+  background: #0050B3;
   -webkit-background-clip: text;
   color: transparent;
   padding-right: 50px;
@@ -128,7 +129,7 @@ export default {
 .unit {
   position: absolute;
   font-size: 16px;
-  color: #ccc;
+  color: black;
   bottom: 0;
   right: 21px;
 }

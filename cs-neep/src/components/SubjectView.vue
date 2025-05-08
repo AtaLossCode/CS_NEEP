@@ -59,7 +59,7 @@
            title: {
              text: '各院校计算机学科实力软科排名',
              top:'certer',
-             padding: [10, 10,10,150]
+             padding: [10,10,10,150]
            },
            tooltip: {},
            // legend中的data一定要跟series里面的data的name保持命名一致，否则无效，不会显示legend
