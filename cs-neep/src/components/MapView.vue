@@ -89,6 +89,14 @@ export default {
       { name: '西北农林科技大学', province: '陕西省', coords: [108.063431, 34.263566] },
     ];
 
+    // 一组易区分的颜色
+    const colors = [
+      '#f5222d', '#fa541c', '#fa8c16', '#fadb14',
+      '#52c41a', '#13c2c2', '#2f54eb', '#722ed1',
+      '#eb2f96', '#a0d911', '#f0f',     '#1890ff',
+      '#faad14', '#13c2c2', '#f5222d', '#fa541c'
+    ];
+
     onMounted(() => {
       if (!chartDom.value) {
         console.error('chartDom is not initialized');
@@ -188,9 +196,11 @@ export default {
             type: 'scatter',
             coordinateSystem: 'geo',
             symbol: 'circle',
-            symbolSize: 5,
+            symbolSize: 8,
             itemStyle: {
-              color: 'red',
+              color: ({ dataIndex }) => colors[dataIndex % colors.length],
+              borderColor: '#fff',
+              borderWidth: 1,
             },
             data: universities.map((uni) => ({
               name: uni.name,

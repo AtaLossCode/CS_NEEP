@@ -61,16 +61,16 @@ export default {
 
 /* 单个模块卡片 */
 .item {
+  justify-content: center;
+  align-items: center;
   width: 100%;
-  height:85%;
+  height:99%;
   flex: 1;
   background: white;
   border-radius: 16px;
   padding: 22px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
   transition: transform 0.3s ease;
-  justify-content: center;
-  align-items: center;
 }
 .item:hover {
   transform: translateY(-6px);
@@ -78,12 +78,14 @@ export default {
 
 /* 左侧竖条标题 */
 .title {
+  margin-top:25px;
   position: relative;
-  padding-left: 20px;
+  padding-left: 15px;
   font-size: 26px;
   color: #0050B3;
 }
 .title::before {
+
   content: '';
   position: absolute;
   left: 2px;
