@@ -7,6 +7,7 @@
 
 <script>
 import * as echarts from 'echarts';
+
 export default {
   name: 'RadarChart',
   data() {
@@ -33,7 +34,7 @@ export default {
         },
         radar: {
           center: ['50%', '50%'],
-          radius: '84%',
+          radius: '70%', // 减小雷达图半径以适配容器
           startAngle: 90,
           splitNumber: 5,
           indicator: [
@@ -45,7 +46,7 @@ export default {
           ],
           axisName: {
             color: '#000',
-            fontSize: 14
+            fontSize: 12 // 减小字体以适配
           },
           axisNameGap: 5,
           splitArea: { show: false },
@@ -115,13 +116,21 @@ export default {
     };
   },
   mounted() {
-    this.chart = echarts.init(this.$refs.radarChart);
-    this.chart.setOption(this.option);
-    window.addEventListener('resize', this.chart.resize);
+    this.initChart();
+    window.addEventListener('resize', this.resizeChart);
   },
   beforeUnmount() {
-    window.removeEventListener('resize', this.chart.resize);
+    window.removeEventListener('resize', this.resizeChart);
     this.chart && this.chart.dispose();
+  },
+  methods: {
+    initChart() {
+      this.chart = echarts.init(this.$refs.radarChart);
+      this.chart.setOption(this.option);
+    },
+    resizeChart() {
+      this.chart && this.chart.resize();
+    }
   }
 };
 </script>
@@ -129,25 +138,29 @@ export default {
 <style scoped>
 .radar-module {
   width: 100%;
-  height:90%;
-  padding: 20px;
+  height: 100%; /* 占满父容器 */
+  padding: 10px; /* 减小内边距 */
   background: white;
   border-radius: 12px;
+  display: flex;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  overflow: hidden; /* 防止溢出 */
 }
+
 .radar-title {
-  margin-bottom: 40px;
-  font-size: 29px;
+  margin: 10px 0; /* 减小间距 */
+  font-size: 20px; /* 减小字体 */
   color: black;
   text-align: center;
   font-weight: bold;
 }
+
 .radar-chart {
   width: 100%;
-  height: 400px;
+  height: 100%; /* 占满剩余空间 */
+  min-height: 200px; /* 最小高度 */
 }
 </style>
-
-
-  
-  

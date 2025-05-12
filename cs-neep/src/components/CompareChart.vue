@@ -3,16 +3,16 @@
     <div class="item">
       <h3 class="title">报考人数</h3>
       <div class="number">
-        <span class="value">45.8</span>
-        <span class="change up">▲2.3%</span>
+        <span class="value">{{ formattedExamCount }}</span>
+        <span class="change up">{{ formattedExamChange }}</span>
         <span class="unit">万人</span>
       </div>
     </div>
     <div class="item">
       <h3 class="title">分数线</h3>
       <div class="number">
-        <span class="value">310</span>
-        <span class="change up">▲1.5%</span>
+        <span class="value">{{ formattedScoreLine }}</span>
+        <span class="change up">{{ formattedScoreChange }}</span>
         <span class="unit">分</span>
       </div>
     </div>
@@ -24,11 +24,11 @@ export default {
   name: 'CompareChart',
   data() {
     return {
-      examCount: 45.8,       
-      examChange: 2.3,       
-      scoreLine: 310,        
-      scoreChange: 1.5       
-    }
+      examCount: 45.8,
+      examChange: 2.3,
+      scoreLine: 310,
+      scoreChange: 1.5
+    };
   },
   computed: {
     formattedExamCount() {
@@ -44,98 +44,95 @@ export default {
       return `▲${this.scoreChange.toFixed(1)}%`;
     }
   }
-}
+};
 </script>
 
 <style scoped>
-/* 主容器 */
 .compare-chart {
   width: 100%;
-  height:100%;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 20px;
+  gap: 10px;
   background-color: #F5F5F5;
+  box-sizing: border-box;
+  
 }
 
-/* 单个模块卡片 */
 .item {
+  border:#5C93D1;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  height:99%;
   flex: 1;
   background: white;
-  border-radius: 16px;
-  padding: 22px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease;
-}
-.item:hover {
-  transform: translateY(-6px);
+  overflow: hidden;
 }
 
-/* 左侧竖条标题 */
+.item:hover {
+  transform: translateY(-4px);
+}
+
 .title {
-  margin-top:25px;
   position: relative;
-  padding-left: 15px;
-  font-size: 26px;
+  padding-left: -10px;
+  font-size: 20px;
   color: #0050B3;
 }
-.title::before {
 
+.title::before {
   content: '';
   position: absolute;
-  left: 2px;
-  top: 6px;
+  left: -10px;
+  top: 4px;
   width: 4px;
-  height: 22px;
+  height: 16px;
   background-color: #0050B3;
   border-radius: 2px;
 }
 
-/* 数字区 */
 .number {
   position: relative;
-  font-size: 90px;
-  display: inline-block;
+  font-size: 57px;
+  display: flex;
+  align-items: center;
   font-weight: bold;
   color: transparent;
 }
 
-/* 渐变数字 */
 .value {
   background: #0050B3;
   -webkit-background-clip: text;
   color: transparent;
-  padding-right: 50px;
+  padding-right: 30px;
 }
 
-/* 上浮动画 */
 @keyframes floatArrow {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-4px); }
 }
+
 .change {
   position: absolute;
-  font-size: 16px;
+  font-size: 12px;
   color: #4db6ff;
-  top: -8px;
+  top: -6px;
   right: 0;
   animation: floatArrow 1.5s infinite ease-in-out;
 }
 
-/* 单位位置 */
 .unit {
   position: absolute;
-  font-size: 16px;
+  font-size: 12px;
   color: black;
   bottom: 0;
-  right: 21px;
+  right: 10px;
 }
 </style>
-
-  
-  

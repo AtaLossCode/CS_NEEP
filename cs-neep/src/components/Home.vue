@@ -82,6 +82,7 @@ export default {
   padding: 20px;
   text-align: center;
   border-bottom: 1px solid #e0e0e0;
+  flex-shrink: 0; /* 防止header被压缩 */
 }
 
 .title {
@@ -91,13 +92,13 @@ export default {
 }
 
 .main-title {
-  font-size: 36px; /* 大字体 */
+  font-size: 36px;
   font-weight: bold;
   color: #333;
 }
 
 .sub-title {
-  font-size: 18px; /* 小字体 */
+  font-size: 18px;
   color: #666;
 }
 
@@ -106,9 +107,10 @@ export default {
   flex: 1;
   background-color: #F5F5F5;
   display: flex;
-  gap: 20px;
-  padding: 20px;
+  gap: 10px; /* 减小列间距 */
+  padding: 10px; /* 减小外边距 */
   box-sizing: border-box;
+  overflow: hidden; /* 防止内容溢出 */
 }
 
 /* 左侧、中间、右侧列均拉满 content 高度 */
@@ -118,31 +120,37 @@ export default {
   height: 100%;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 10px; /* 减小模块间距 */
+  box-sizing: border-box;
 }
 
 /* 分别设置各列宽度 */
 .left-col {
   width: 25%;
+  min-width: 200px; /* 防止过窄 */
 }
 
 .center-col {
   width: 50%;
+  min-width: 400px; /* 防止过窄 */
 }
 
 .right-col {
   width: 25%;
+  min-width: 200px; /* 防止过窄 */
 }
 
 /* 模块盒子：蓝色边框、白色背景，并默认占父列均分高度 */
 .module-box {
   background-color: white;
-  border: 2px solid blue;
+  border: 2px solid #5C93D1;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 10px;
+  padding: 5px; /* 减小内边距 */
   box-sizing: border-box;
+  overflow: hidden; /* 防止内部内容溢出 */
+  flex: 1; /* 默认均分高度 */
 }
 
 /* 中间区域内，Map模块和Score模块分别占3/4和1/4高度 */
@@ -154,6 +162,7 @@ export default {
   flex: 1.5;
 }
 
+/* 左侧区域内，Radar和Top5模块均分高度 */
 .left-col .radar-box {
   flex: 1;
 }
@@ -175,7 +184,47 @@ export default {
   flex: 1;
 }
 
-.compare-box{
-  border:white;
+/* 修复Compare模块的边框问题 */
+.compare-box {
+  border: 2px solid #F5F5F5; /* 与其他模块一致 */
+  padding: 0px; /* 减小内边距 */
+}
+
+/* 确保组件内容不溢出 */
+.module-box > * {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  box-sizing: border-box;
+  overflow: hidden; /* 防止组件内容溢出 */
+}
+
+/* 响应式调整 */
+@media (max-width: 1200px) {
+  .left-col,
+  .right-col {
+    width: 30%;
+  }
+  .center-col {
+    width: 40%;
+  }
+}
+
+@media (max-width: 800px) {
+  .content {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .left-col,
+  .center-col,
+  .right-col {
+    width: 100%;
+    min-width: unset;
+    height: auto;
+  }
+  .module-box {
+    min-height: 150px; /* 确保模块有最小高度 */
+  }
 }
 </style>

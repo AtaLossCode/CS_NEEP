@@ -1,8 +1,5 @@
 <template>
   <div class="chart-container">
-    <div>
-      <StarOutlined class="test-icon" />
-    </div>
     <div ref="chartDom" class="chart"></div>
     <a-card
       v-if="showMenu"
@@ -95,7 +92,7 @@ export default {
     const colors = [
       '#f5222d', '#fa541c', '#fa8c16', '#fadb14',
       '#52c41a', '#13c2c2', '#2f54eb', '#722ed1',
-      '#eb2f96', '#a0d911', '#f0f',     '#1890ff',
+      '#eb2f96', '#a0d911', '#f0f', '#1890ff',
       '#faad14', '#13c2c2', '#f5222d', '#fa541c'
     ];
 
@@ -161,7 +158,6 @@ export default {
       '陕西师范大学': 'snnu',
       '西安电子科技大学': 'xdu'
     };
-
 
     let handleDocumentClick = null;
     onMounted(() => {
@@ -292,11 +288,34 @@ export default {
             (uni) => uni.province === province
           );
 
-          // Position menu near click
+          // 动态调整弹框位置，防止溢出
           const event = params.event.event;
+          const chartRect = chartDom.value.getBoundingClientRect();
+          const menuWidth = 200; // 弹框宽度
+          const menuHeight = 300; // 弹框高度
+          let offsetX = event.offsetX + 10;
+          let offsetY = event.offsetY + 10;
+
+          // 确保弹框不超出右边界
+          if (offsetX + menuWidth > chartRect.width) {
+            offsetX = chartRect.width - menuWidth - 10;
+          }
+          // 确保弹框不超出下边界
+          if (offsetY + menuHeight > chartRect.height) {
+            offsetY = chartRect.height - menuHeight - 10;
+          }
+          // 确保弹框不超出左边界
+          if (offsetX < 0) {
+            offsetX = 10;
+          }
+          // 确保弹框不超出上边界
+          if (offsetY < 0) {
+            offsetY = 10;
+          }
+
           menuPosition.value = {
-            top: `${event.offsetY + 10}px`,
-            left: `${event.offsetX + 10}px`,
+            top: `${offsetY}px`,
+            left: `${offsetX}px`,
           };
           showMenu.value = true;
 
@@ -304,7 +323,7 @@ export default {
         }
       });
 
-      // ✅ 注册点击监听器，并在销毁时移除
+      // 监听点击事件，点击外部关闭弹框
       handleDocumentClick = (event) => {
         if (chartDom.value && !chartDom.value.contains(event.target)) {
           showMenu.value = false;
@@ -313,7 +332,6 @@ export default {
       document.addEventListener('click', handleDocumentClick);
     });
 
-    // ✅ 在组件卸载时移除监听器
     onBeforeUnmount(() => {
       if (handleDocumentClick) {
         document.removeEventListener('click', handleDocumentClick);
@@ -328,7 +346,6 @@ export default {
       if (shortName) {
         router.push(`/university/${shortName}`);
       } else {
-        // fallback：没有设置简称时降级为默认格式
         const fallback = university.name
           .toLowerCase()
           .replace(/\s+/g, '-')
@@ -336,7 +353,6 @@ export default {
         router.push(`/university/${fallback}`);
       }
     };
-
 
     return {
       chartDom,
@@ -358,30 +374,53 @@ export default {
   justify-content: center;
   align-items: center;
   position: relative;
+  box-sizing: border-box;
 }
+
 .chart {
   width: 100%;
   height: 100%;
-  overflow: hidden;
 }
+
 .university-menu {
   position: absolute;
   z-index: 1000;
-  min-width: 200px;
-  max-height: 300px;
+  width: 250px;
+  max-height: 300px; /* 限制最大高度 */
   overflow-y: auto;
   border-radius: 4px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  background: white;
 }
+
 .university-menu :deep(.ant-card-head-title) {
-  font-size: 22px;
-  padding: 20px 10px;
+  font-size: 18px; /* 减小标题字体 */
+  padding: 10px;
 }
+
 .university-item {
   cursor: pointer;
-  font-size: 20px;
+  font-size: 16px; /* 减小列表字体 */
 }
+
 .university-item:hover {
   background: #e6f7ff;
+}
+
+/* 响应式调整 */
+@media (max-width: 800px) {
+  .university-menu {
+    width: 150px;
+    max-height: 200px;
+  }
+
+  .university-menu :deep(.ant-card-head-title) {
+    font-size: 16px;
+    padding: 8px;
+  }
+
+  .university-item {
+    font-size: 14px;
+  }
 }
 </style>
