@@ -1,8 +1,8 @@
 <template>
   <div class="chart-container">
-      <div>
-    <StarOutlined class="test-icon" />
-  </div>
+    <div>
+      <StarOutlined class="test-icon" />
+    </div>
     <div ref="chartDom" class="chart"></div>
     <a-card
       v-if="showMenu"
@@ -26,7 +26,8 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { useRouter } from 'vue-router';
 import * as echarts from 'echarts';
 import geoJson from '../assets/china.json';
 import { Card, List } from 'ant-design-vue';
@@ -46,6 +47,7 @@ export default {
     const menuPosition = ref({ top: '0px', left: '0px' });
     const selectedProvince = ref('');
     const selectedUniversities = ref([]);
+    const router = useRouter();
 
     // Define 985 universities with their provinces
     const universities = [
@@ -97,6 +99,71 @@ export default {
       '#faad14', '#13c2c2', '#f5222d', '#fa541c'
     ];
 
+    const universityRoutes = {
+      '四川大学': 'scu',
+      '电子科技大学': 'uestc',
+      '清华大学': 'thu',
+      '北京大学': 'pku',
+      '复旦大学': 'fudan',
+      '上海交通大学': 'sjtu',
+      '东南大学': 'seu',
+      '东华大学': 'dhu',
+      '上海外国语大学': 'sisu',
+      '武汉理工大学': 'wut',
+      '华中师范大学': 'ccnu',
+      '吉林大学': 'jlu',
+      '同济大学': 'tongji',
+      '西北农林科技大学': 'nwafu',
+      '东北师范大学': 'nenu',
+      '上海财经大学': 'sufe',
+      '中国矿业大学': 'cumt',
+      '西南大学': 'swu',
+      '山东大学': 'sdu',
+      '兰州大学': 'lzu',
+      '天津大学': 'tju',
+      '东北大学': 'neu',
+      '华东师范大学': 'ecnu',
+      '武汉大学': 'whu',
+      '重庆大学': 'cqu',
+      '北京外国语大学': 'bfsu',
+      '中国农业大学': 'cau',
+      '南开大学': 'nku',
+      '浙江大学': 'zju',
+      '中南大学': 'csu',
+      '中山大学': 'sysu',
+      '西安交通大学': 'xjtu',
+      '中国海洋大学': 'ouc',
+      '北京师范大学': 'bnu',
+      '大连理工大学': 'dut',
+      '南京大学': 'nju',
+      '厦门大学': 'xmu',
+      '华中科技大学': 'hust',
+      '湖南大学': 'hnu',
+      '华南理工大学': 'scut',
+      '北京理工大学': 'bit',
+      '北京航空航天大学': 'buaa',
+      '哈尔滨工业大学': 'hit',
+      '西北工业大学': 'npu',
+      '中央民族大学': 'muc',
+      '中国科学技术大学': 'ustc',
+      '北京科技大学': 'ustb',
+      '中央财经大学': 'cufe',
+      '对外经济贸易大学': 'uibe',
+      '东北林业大学': 'nefu',
+      '华东理工大学': 'ecust',
+      '河海大学': 'hh',
+      '江南大学': 'jiangnan',
+      '合肥工业大学': 'hfut',
+      '中国石油大学': 'upc',
+      '中国地质大学': 'cug',
+      '西南财经大学': 'swufe',
+      '西南交通大学': 'swjtu',
+      '陕西师范大学': 'snnu',
+      '西安电子科技大学': 'xdu'
+    };
+
+
+    let handleDocumentClick = null;
     onMounted(() => {
       if (!chartDom.value) {
         console.error('chartDom is not initialized');
@@ -237,20 +304,39 @@ export default {
         }
       });
 
-      // Close menu when clicking elsewhere
-      document.addEventListener('click', (event) => {
-        if (!chartDom.value.contains(event.target)) {
+      // ✅ 注册点击监听器，并在销毁时移除
+      handleDocumentClick = (event) => {
+        if (chartDom.value && !chartDom.value.contains(event.target)) {
           showMenu.value = false;
         }
-      });
+      };
+      document.addEventListener('click', handleDocumentClick);
+    });
+
+    // ✅ 在组件卸载时移除监听器
+    onBeforeUnmount(() => {
+      if (handleDocumentClick) {
+        document.removeEventListener('click', handleDocumentClick);
+      }
     });
 
     const handleUniversityClick = (university) => {
       console.log('Clicked university:', university.name);
-      showMenu.value = false; // Close the menu after selection
-      // Future navigation can be implemented here, e.g., using Vue Router
-      // this.$router.push(`/university/${university.name}`)
+      showMenu.value = false;
+
+      const shortName = universityRoutes[university.name];
+      if (shortName) {
+        router.push(`/university/${shortName}`);
+      } else {
+        // fallback：没有设置简称时降级为默认格式
+        const fallback = university.name
+          .toLowerCase()
+          .replace(/\s+/g, '-')
+          .replace(/[^a-z0-9-]/g, '');
+        router.push(`/university/${fallback}`);
+      }
     };
+
 
     return {
       chartDom,
