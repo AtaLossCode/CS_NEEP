@@ -36,7 +36,7 @@ export default {
           textStyle: {
             fontSize: 12
           },
-          extraCssText: 'box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); white-space: normal; width: 200px; padding: 8px; border-radius: 4px; background-color: #fff;',
+          extraCssText: 'box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); white-space: normal; width: 250px; padding: 8px; border-radius: 4px; background-color: #fff;',
           position: function (point, params, dom, rect, size) {
             const chartRect = this.$refs.wordcloudChart.getBoundingClientRect();
             const tooltipWidth = size.contentSize[0];

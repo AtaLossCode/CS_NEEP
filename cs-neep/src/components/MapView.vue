@@ -6,6 +6,7 @@
       class="university-menu"
       :style="menuPosition"
       :title="`${selectedProvince} 985 院校`"
+      ref="menuDom"
     >
       <a-list
         :data-source="selectedUniversities"
@@ -40,6 +41,7 @@ export default {
   },
   setup() {
     const chartDom = ref(null);
+    const menuDom = ref(null);
     const showMenu = ref(false);
     const menuPosition = ref({ top: '0px', left: '0px' });
     const selectedProvince = ref('');
@@ -291,24 +293,20 @@ export default {
           // 动态调整弹框位置，防止溢出
           const event = params.event.event;
           const chartRect = chartDom.value.getBoundingClientRect();
-          const menuWidth = 200; // 弹框宽度
-          const menuHeight = 300; // 弹框高度
+          const menuWidth = 200;
+          const menuHeight = 250;
           let offsetX = event.offsetX + 10;
           let offsetY = event.offsetY + 10;
 
-          // 确保弹框不超出右边界
           if (offsetX + menuWidth > chartRect.width) {
             offsetX = chartRect.width - menuWidth - 10;
           }
-          // 确保弹框不超出下边界
           if (offsetY + menuHeight > chartRect.height) {
             offsetY = chartRect.height - menuHeight - 10;
           }
-          // 确保弹框不超出左边界
           if (offsetX < 0) {
             offsetX = 10;
           }
-          // 确保弹框不超出上边界
           if (offsetY < 0) {
             offsetY = 10;
           }
@@ -325,7 +323,13 @@ export default {
 
       // 监听点击事件，点击外部关闭弹框
       handleDocumentClick = (event) => {
-        if (chartDom.value && !chartDom.value.contains(event.target)) {
+        if (
+          showMenu.value &&
+          menuDom.value &&
+          !menuDom.value.$el.contains(event.target) &&
+          chartDom.value &&
+          !chartDom.value.contains(event.target)
+        ) {
           showMenu.value = false;
         }
       };
@@ -356,6 +360,7 @@ export default {
 
     return {
       chartDom,
+      menuDom,
       showMenu,
       menuPosition,
       selectedProvince,
@@ -385,8 +390,8 @@ export default {
 .university-menu {
   position: absolute;
   z-index: 1000;
-  width: 250px;
-  max-height: 300px; /* 限制最大高度 */
+  width: 200px;
+  max-height: 250px;
   overflow-y: auto;
   border-radius: 4px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
@@ -394,20 +399,19 @@ export default {
 }
 
 .university-menu :deep(.ant-card-head-title) {
-  font-size: 18px; /* 减小标题字体 */
-  padding: 10px;
+  font-size: 16px;
+  padding: 5px;
 }
 
 .university-item {
   cursor: pointer;
-  font-size: 16px; /* 减小列表字体 */
+  font-size: 14px;
 }
 
 .university-item:hover {
   background: #e6f7ff;
 }
 
-/* 响应式调整 */
 @media (max-width: 800px) {
   .university-menu {
     width: 150px;
