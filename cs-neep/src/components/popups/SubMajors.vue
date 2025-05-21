@@ -1,14 +1,14 @@
 <template>
   <div class="subdivided-majors">
-    <h2>细分专业</h2>
+    <h2>计算机学院专业</h2>
     <!-- 表格 -->
     <div class="table-container">
       <table>
         <thead>
           <tr>
-            <th>开设专业</th>
+            <th>2024年开设专业</th>
             <th>第四轮学科评估等级</th>
-            <th>2024年录取人数</th>
+            <th>2024年录取人数（全日制）</th>
             <th>2024年复试分数线</th>
           </tr>
         </thead>
@@ -20,10 +20,10 @@
             <td>310</td>
           </tr>
           <tr>
-            <td>人工智能</td>
+            <td>智能科学与技术</td>
             <td>-</td>
-            <td>-</td>
-            <td>-</td>
+            <td>2</td>
+            <td>300</td>
           </tr>
           <tr>
             <td>软件工程</td>
@@ -32,10 +32,10 @@
             <td>310</td>
           </tr>
           <tr>
-            <td>网络安全</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
+            <td>电子信息</td>
+            <td>C</td>
+            <td>86</td>
+            <td>320</td>
           </tr>
         </tbody>
       </table>
@@ -59,7 +59,7 @@
     
     <!-- ✅ 公共图例 -->
     <div class="legend legend-horizontal">
-      <div v-for="(item, index) in getChartData(2024)" :key="index" class="legend-item">
+      <div v-for="(item, index) in getAllMajors()" :key="index" class="legend-item">
         <span class="color-box" :style="{ backgroundColor: item.color }"></span>
         <span>{{ item.name }}</span>
       </div>
@@ -75,34 +75,45 @@ import * as echarts from 'echarts';
 const chartData = {
   2020: [
     { name: '计算机科学与技术', value: 41, color: '#1E4BC0' },
-    { name: '人工智能', value: 25, color: '#537BF7' },
-    { name: '软件工程', value: 20, color: '#93AFF9' },
-    { name: '网络安全', value: 15, color: '#C7D3FB' },
+    // { name: '智能科学与技术', value: 25, color: '#537BF7' },
+    { name: '软件工程', value: 8, color: '#93AFF9' },
+    { name: '电子信息', value: 73, color: '#C7D3FB' },
   ],
   2021: [
-    { name: '计算机科学与技术', value: 27, color: '#1E4BC0' },
-    { name: '人工智能', value: 4, color: '#537BF7' },
-    { name: '软件工程', value: 14, color: '#93AFF9' },
-    { name: '网络安全', value: 15, color: '#C7D3FB' },
+    { name: '计算机科学与技术', value: 18, color: '#1E4BC0' },
+    { name: '人工智能', value: 3, color: '#6B9BFF' },
+    { name: '软件工程', value: 13, color: '#93AFF9' },
+    { name: '电子信息', value: 61, color: '#C7D3FB' },
   ],
   2022: [
-    { name: '计算机科学与技术', value: 18, color: '#1E4BC0' },
-    { name: '人工智能', value: 7, color: '#537BF7' },
-    { name: '软件工程', value: 14, color: '#93AFF9' },
-    { name: '网络安全', value: 15, color: '#C7D3FB' },
+    { name: '计算机科学与技术', value: 17, color: '#1E4BC0' },
+    { name: '人工智能', value: 7, color: '#6B9BFF' },
+    { name: '软件工程', value: 13, color: '#93AFF9' },
+    { name: '电子信息', value: 78, color: '#C7D3FB' },
   ],
   2023: [
     { name: '计算机科学与技术', value: 20, color: '#1E4BC0' },
-    { name: '人工智能', value: 40, color: '#537BF7' },
+    // { name: '智能科学与技术', value: 40, color: '#537BF7' },
     { name: '软件工程', value: 15, color: '#93AFF9' },
-    { name: '网络安全', value: 15, color: '#C7D3FB' },
+    { name: '电子信息', value: 175, color: '#C7D3FB' },
   ],
   2024: [
     { name: '计算机科学与技术', value: 26, color: '#1E4BC0' },
-    { name: '人工智能', value: 45, color: '#537BF7' },
+    { name: '智能科学与技术', value: 2, color: '#537BF7' },
     { name: '软件工程', value: 14, color: '#93AFF9' },
-    { name: '网络安全', value: 15, color: '#C7D3FB' },
+    { name: '电子信息', value: 86, color: '#C7D3FB' },
   ],
+};
+
+// 获取所有唯一的专业及其颜色
+const getAllMajors = () => {
+  const majorsMap = new Map();
+  Object.values(chartData).forEach(yearData => {
+    yearData.forEach(item => {
+      majorsMap.set(item.name, { name: item.name, color: item.color });
+    });
+  });
+  return Array.from(majorsMap.values());
 };
 
 // 获取图表数据
