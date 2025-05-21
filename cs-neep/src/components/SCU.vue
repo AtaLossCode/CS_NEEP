@@ -32,8 +32,11 @@
       <!-- 弹窗 -->
       <div v-if="showPopupContent" class="popup">
         <div class="popup-content">
-          <h2>{{ popupContent }}</h2>
-          <p>这里是 {{ popupContent }} 的详细信息。</p>
+          <component :is="activePopupComponent" v-if="activePopupComponent" />
+          <!-- <template v-else>
+            <h2>{{ activePopupLabel }}</h2>
+            <p>这里是 {{ activePopupLabel }} 的详细信息。</p>
+          </template> -->
           <button @click="closePopup">关闭</button>
         </div>
       </div>
@@ -42,13 +45,26 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, onUnmounted } from 'vue';
+import { ref, reactive, onMounted, onUnmounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
+import { defineAsyncComponent } from 'vue';
+
+// 动态导入弹窗组件
+const popupComponents = {
+  '综合实力': defineAsyncComponent(() => import('@/components/popups/TolStrength.vue')),
+  '细分专业': defineAsyncComponent(() => import('@/components/popups/SubMajors.vue')),
+  '师资概况': defineAsyncComponent(() => import('@/components/popups/TeachersIntro.vue')),
+  '分数线': defineAsyncComponent(() => import('@/components/popups/MinScore.vue')),
+  '报录比': defineAsyncComponent(() => import('@/components/popups/AdmissionRatio.vue')),
+};
 
 const router = useRouter();
 
 const showPopupContent = ref(false);
-const popupContent = ref('');
+const activePopupLabel = ref('');
+const activePopupComponent = computed(() => {
+  return popupComponents[activePopupLabel.value];
+});
 
 const nodes = reactive([
   { x: 400, y: 300, r: 80, color: '#1E4BC0', label: '四川大学' },
@@ -137,14 +153,16 @@ onUnmounted(() => {
   document.removeEventListener('mouseup', globalMouseUp);
 });
 
-const showPopup = (content) => {
-  popupContent.value = content;
-  showPopupContent.value = true;
+const showPopup = (label) => {
+  if (popupComponents[label] !== undefined) {
+    activePopupLabel.value = label;
+    showPopupContent.value = true;
+  }
 };
 
 const closePopup = () => {
   showPopupContent.value = false;
-  popupContent.value = '';
+  activePopupLabel.value = '';
 };
 
 // 跳转到首页
@@ -255,7 +273,7 @@ const goToHome = () => {
 .popup-content {
   background-color: white;
   padding: 30px;
-  width: 100%;
+  width: 70%;
   height: 90%;
   overflow-y: auto;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
