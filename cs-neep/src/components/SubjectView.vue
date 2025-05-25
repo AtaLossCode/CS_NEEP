@@ -61,7 +61,7 @@ export default {
             left: 'center',
             top: '1%',
             textStyle: {
-              fontSize: 16 // 减小标题字体
+              fontSize: 12 // 减小标题字体
             }
           },
           tooltip: {},
@@ -71,9 +71,10 @@ export default {
               legendHoverLink: true,
               roseType: 'area',
               name: '软科评估得分',
-              radius: '62%', // 减小饼图半径
+              radius: '120%', // 减小饼图半径
+              center: ['50%', '70%'],
               label: {
-                show: true,
+                show: false,
                 fontSize: 10 // 减小标签字体
               },
               type: 'pie',
