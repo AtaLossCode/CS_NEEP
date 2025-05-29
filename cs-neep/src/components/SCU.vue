@@ -184,7 +184,7 @@ const goToHome = () => {
 /* 顶部标题部分 */
 .header {
   background-color: white;
-  padding: 20px;
+  padding: 15px;
   border-bottom: 1px solid #e0e0e0;
   display: flex;
   align-items: center;
@@ -215,13 +215,13 @@ const goToHome = () => {
 }
 
 .main-title {
-  font-size: 36px;
+  font-size: 32px;
   font-weight: bold;
   color: #333;
 }
 
 .sub-title {
-  font-size: 18px;
+  font-size: 14px;
   color: #666;
 }
 

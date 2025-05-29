@@ -79,7 +79,7 @@ export default {
 /* 顶部标题部分 */
 .header {
   background-color: white;
-  padding: 20px;
+  padding: 15px;
   text-align: center;
   border-bottom: 1px solid #e0e0e0;
   flex-shrink: 0; /* 防止header被压缩 */
@@ -92,13 +92,13 @@ export default {
 }
 
 .main-title {
-  font-size: 36px;
+  font-size: 32px;
   font-weight: bold;
   color: #333;
 }
 
 .sub-title {
-  font-size: 18px;
+  font-size: 14px;
   color: #666;
 }
 
