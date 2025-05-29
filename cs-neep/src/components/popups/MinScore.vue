@@ -1,344 +1,343 @@
-<!-- <template>
-  <div class="boxplot-container">
-    <div id="main-boxplot" :style="{ width: chartWidth, height: chartHeight }"></div>
+<template>
+  <div class="dual-chart-container">
+    
+    <div class="chart-wrapper">
+      <div ref="scatterChart" style="width: 100%; height: 500px;"></div>
+      <div v-if="scatterError" class="error-message">{{ scatterError }}</div>
+    </div>
+    <div class="chart-wrapper">
+      <div ref="boxplotChart" style="width: 100%; height: 500px;"></div>
+      <div v-if="boxplotError" class="error-message">{{ boxplotError }}</div>
+    </div>
   </div>
 </template>
 
 <script>
 import * as echarts from 'echarts';
-import 'echarts/extension/dataTool'; // 确保引入数据工具扩展
+import 'echarts/extension/dataTool'; // 导入箱线图数据处理工具
 
 export default {
-  name: 'BoxplotChart',
-  props: {
-    // 可选props，支持外部传入尺寸和数据
-    width: { type: String, default: '600px' },
-    height: { type: String, default: '400px' },
-    sourceData: {
-      type: Array,
-      default: () => [
-        [850, 740, 900, 1070, 930, 850, 950, 980, 980, 880, 1000, 980, 930, 650, 760, 810, 1000, 1000, 960, 960],
-        [960, 940, 960, 940, 880, 800, 850, 880, 900, 840, 830, 790, 810, 880, 880, 830, 800, 790, 760, 800],
-        [880, 880, 880, 860, 720, 720, 620, 860, 970, 950, 880, 910, 850, 870, 840, 840, 850, 840, 840, 840],
-        [890, 810, 810, 820, 800, 770, 760, 740, 750, 760, 910, 920, 890, 860, 880, 720, 840, 850, 850, 780]
-      ]
-    }
-  },
+  name: 'DualChartComponent',
   data() {
     return {
-      chart: null,
-      chartWidth: this.width,
-      chartHeight: this.height,
-      processedData: null
+      scatterChart: null,
+      boxplotChart: null,
+      scatterError: null,
+      boxplotError: null,
+      // 散点图数据
+      scatterData: [
+        [[2, 80, 120, '计算机', 'blue'], [2, 90, 10, '计算机', 'blue'], [2, 75, 20, '计算机', 'blue']],
+        [[4, 60, 90, '软件A', 'green'], [4, 70, 85, '软件B', 'green'], [4, 55, 80, '软件C', 'green']],
+        [[6, 90, 130, 'AI-A', 'purple'], [6, 85, 120, 'AI-B', 'purple'], [6, 80, 110, 'AI-C', 'purple']],
+        [[8, 70, 100, '网安A', 'orange'], [8, 65, 95, '网安B', 'orange'], [8, 60, 90, '网安C', 'orange']]
+      ],
+      // 散点图颜色映射
+      scatterColorMap: {
+        blue: 'rgba(59, 130, 246, 0.8)',
+        green: 'rgba(34, 197, 94, 0.8)',
+        purple: 'rgba(168, 85, 247, 0.8)',
+        orange: 'rgba(245, 158, 11, 0.8)'
+      },
+      // 箱线图数据
+      boxplotData: [
+        [340, 354, 367, 375, 386],
+        [310, 325, 345, 367, 373],
+        [324, 334, 345, 355, 366],
+        [332, 345, 350, 360, 370],
+        [344, 359, 370, 375, 388],
+        [400, 338, 348, 358, 368]
+      ],
+      boxplotNames: ['2020', '2021', '2022', '2023', '2024', '2025'],
+      boxplotOutliers: [
+        [0, 17, "异常"],
+        [3, 75, "异常"]
+      ]
     };
   },
-  watch: {
-    // 监听props变化并重新渲染图表
-    sourceData(newVal) {
-      this.initChartData(newVal);
-    },
-    width(newVal) {
-      this.chartWidth = newVal;
-      this.resizeChart();
-    },
-    height(newVal) {
-      this.chartHeight = newVal;
-      this.resizeChart();
-    }
-  },
   mounted() {
-    this.initChart();
-    this.initChartData(this.sourceData);
-    window.addEventListener('resize', this.resizeChart);
+    try {
+      this.initScatterChart();
+      this.initBoxplotChart();
+      window.addEventListener('resize', this.handleResize);
+    } catch (e) {
+      this.scatterError = `初始化散点图失败: ${e.message}`;
+      console.error(e);
+    }
   },
   beforeUnmount() {
-    if (this.chart) {
-      this.chart.dispose();
-      window.removeEventListener('resize', this.resizeChart);
-    }
+    window.removeEventListener('resize', this.handleResize);
+    if (this.scatterChart) this.scatterChart.dispose();
+    if (this.boxplotChart) this.boxplotChart.dispose();
   },
   methods: {
-    initChart() {
-      this.chart = echarts.init(document.getElementById('main-boxplot'));
-      this.setBaseOptions();
-    },
-
-    initChartData(data) {
-      this.processedData = echarts.dataTool.prepareBoxplotData(data);
-      this.updateChartOptions();
-    },
-
-    setBaseOptions() {
+    initScatterChart() {
+      const series = this.scatterData.map((group, index) => {
+        const indicatorName = ['计科', '软件工程', '人工智能', '网络空间安全'][index];
+        const colorKey = group[0][4];
         
-      this.chart.setOption({
-        title: [
-          {
-            text: '五川大学/分数线',
-            left: ''
-          },
-        //   {
-        //     text: 'upper: Q3 + 1.5 * IQR \nlower: Q1 - 1.5 * IQR',
-        //     borderColor: '#999',
-        //     borderWidth: 1,
-        //     textStyle: { fontSize: 12 },
-        //     left: '10%',
-        //     top: '90%'
-        //   }
-        ],
-        tooltip: {
-          trigger: 'item',
-          axisPointer: { type: 'shadow' }
-        },
-        grid: {
-          left: '10%',
-          right: '10%',
-          bottom: '15%'
-        },
-        xAxis: {
-          type: 'category',
-          axisLabel: { formatter: '' }
-        },
-        yAxis: {
-          type: 'value',
-          name: '',
-          splitArea: { show: true }
-        }
-      });
-    },
-
-    updateChartOptions() {
-      if (!this.processedData) return;
-      
-      this.chart.setOption({
-        xAxis: { data: this.processedData.axisData },
-        series: [
-          {
-            type: 'boxplot',
-            data: this.processedData.boxData,
-            tooltip: {
-              formatter: (param) => [
-                `实验 ${param.name}:`,
-                `上限: ${param.data[5]}`,
-                `上四分位数: ${param.data[4]}`,
-                `中位数: ${param.data[3]}`,
-                `下四分位数: ${param.data[2]}`,
-                `下限: ${param.data[1]}`
-              ].join('<br/>')
+        return {
+          name: indicatorName,
+          data: group,
+          type: 'scatter',
+          symbolSize: data => Math.sqrt(data[2]) * 3,
+          emphasis: {
+            label: {
+              show: true,
+              formatter: param => `${param.data[3]} (${param.data[2]})`,
+              position: 'top',
+              textStyle: { fontSize: 12 }
             }
           },
-          {
-            name: 'outlier',
-            type: 'scatter',
-            data: this.processedData.outliers
-          }
-        ]
+          itemStyle: {
+            color: new echarts.graphic.RadialGradient(
+              0.4, 0.3, 1,
+              [
+                { offset: 0, color: this.getLighterColor(this.scatterColorMap[colorKey]) },
+                { offset: 1, color: this.scatterColorMap[colorKey] }
+              ]
+            ),
+            borderWidth: 1,
+            borderColor: '#fff'
+          },
+          symbol: ['circle', 'circle', 'circle', 'circle'][index % 4]
+        };
       });
-    },
 
-    resizeChart() {
-      this.chart?.resize();
-    }
-  }
-};
-</script>
-
-<style scoped>
-.boxplot-container {
-  width: 100%;
-  height: 100%;
-  box-sizing: border-box;
-}
-</style>
-
-
- -->
-
- <template>
-  <div class="boxplot-container">
-    <div class="chart-wrapper">
-      <div id="main-boxplot" :style="{ width: chartWidth, height: chartHeight }"></div>
-    </div>
-    <div class="chart-wrapper">
-      <div id="comparison-boxplot" :style="{ width: chartWidth, height: chartHeight }"></div>
-    </div>
-  </div>
-</template>
-
-<script>
-import * as echarts from 'echarts';
-import 'echarts/extension/dataTool';
-
-export default {
-  name: 'BoxplotChart',
-  props: {
-    width: { type: String, default: '400px' },
-    height: { type: String, default: '300px' },
-    sourceData: {
-      type: Array,
-      default: () => [
-        [850, 740, 900, 1070, 930, 850, 950, 980, 980, 880, 1000, 980, 930, 650, 760, 810, 1000, 1000, 960, 960],
-        [960, 940, 960, 940, 880, 800, 850, 880, 900, 840, 830, 790, 810, 880, 880, 830, 800, 790, 760, 800],
-        [880, 880, 880, 860, 720, 720, 620, 860, 970, 950, 880, 910, 850, 870, 840, 840, 850, 840, 840, 840],
-        [890, 810, 810, 820, 800, 770, 760, 740, 750, 760, 910, 920, 890, 860, 880, 720, 840, 850, 850, 780]
-      ]
-    },
-    comparisonData: {
-      type: Array,
-      default: () => [
-        [750, 700, 800, 970, 830, 750, 850, 880, 880, 780, 900, 880, 830, 550, 660, 710, 900, 900, 860, 860],
-        [860, 840, 860, 840, 780, 700, 750, 780, 800, 740, 730, 690, 710, 780, 780, 730, 700, 690, 660, 700],
-        [780, 780, 780, 760, 620, 620, 520, 760, 870, 850, 780, 810, 750, 770, 740, 740, 750, 740, 740, 740],
-        [790, 710, 710, 720, 700, 670, 660, 640, 650, 660, 810, 820, 790, 760, 780, 620, 740, 750, 750, 680],
-        [790, 710, 710, 720, 700, 670, 660, 640, 650, 660, 810, 820, 790, 760, 780, 620, 740, 750, 750, 680]
-      ]
-    },
-        mainChartLabels: { 
-      type: Array,
-      default: () => ['计算机科学与技术', '人工智能', '软件工程', '电子信息工程']
-    },
-    comparisonChartLabels: { 
-      type: Array,
-      default: () => ['2020年', '2021年', '2022年', '2023年', '2024年']
-    }
-  },
-  
-  data() {
-    return {
-      chart: null,
-      comparisonChart: null,
-      chartWidth: this.width,
-      chartHeight: this.height,
-      processedData: null,
-      comparisonProcessedData: null
-    };
-  },
-  watch: {
-    sourceData(newVal) {
-      this.initChartData(newVal);
-    },
-    comparisonData(newVal) {
-      this.initComparisonChartData(newVal);
-    },
-    width(newVal) {
-      this.chartWidth = newVal;
-      this.resizeCharts();
-    },
-    height(newVal) {
-      this.chartHeight = newVal;
-      this.resizeCharts();
-    }
-  },
-  mounted() {
-    this.initMainChart();
-    this.initComparisonChart();
-    this.initChartData(this.sourceData);
-    this.initComparisonChartData(this.comparisonData);
-    window.addEventListener('resize', this.resizeCharts);
-  },
-  beforeUnmount() {
-    if (this.chart) {
-      this.chart.dispose();
-    }
-    if (this.comparisonChart) {
-      this.comparisonChart.dispose();
-    }
-    window.removeEventListener('resize', this.resizeCharts);
-  },
-  methods: {
-    initMainChart() {
-      this.chart = echarts.init(document.getElementById('main-boxplot'));
-      this.setBaseOptions(this.chart, '四川大学/分数线');
-    },
-
-    initComparisonChart() {
-      this.comparisonChart = echarts.init(document.getElementById('comparison-boxplot'));
-      this.setBaseOptions(this.comparisonChart, '2020-2024分数线箱线图');
-    },
-
-    initChartData(data) {
-      this.processedData = echarts.dataTool.prepareBoxplotData(data);
-      this.updateChartOptions(this.chart, this.processedData, '四川大学');
-    },
-
-    initComparisonChartData(data) {
-      this.comparisonProcessedData = echarts.dataTool.prepareBoxplotData(data);
-      this.updateChartOptions(this.comparisonChart, this.comparisonProcessedData, '对比院校');
-    },
-
-    setBaseOptions(chartInstance, titleText) {
-      chartInstance.setOption({
-        title: {
-          text: titleText,
-          left: 'center'
+      const scatterOption = {
+          title: {
+          text: '学科对比分析',
+          
+          left: 'center',
+          textStyle: {
+            fontSize: 16,
+            fontWeight: 'bold',
+            color: '#333'
+          }},
+        // backgroundColor: '#f8f9fa',
+        legend: {
+          top: 30,
+          left: 'center',
+          data: ['计科', '软件工程', '人工智能', '网络空间安全'],
+          itemWidth: 12,
+          itemHeight: 12
         },
         tooltip: {
           trigger: 'item',
-          axisPointer: { type: 'shadow' }
+          formatter: function(params) {
+            return `
+              <div style="font-weight: bold; color: ${params.color}">${params.seriesName}</div>
+              
+              <div>人数: ${params.data[2]}</div>
+              
+            `;
+          }
         },
+        xAxis: {
+          name: '',
+          type: 'value',
+          splitLine: {
+            lineStyle: {
+              type: 'dashed',
+              color: '#eee'
+            }
+          },
+          // min: 0,
+          // max: 13,
+          
+          axisLine: {
+            lineStyle: { color: '#999' },
+            
+          },
+            axisLabel: {
+            show: false // 隐藏标签
+          },
+            axisTick: {
+            show: false // 隐藏刻度
+          }
+        },
+        yAxis: {
+          name: '分数',
+          type: 'value',
+          scale: true,
+          splitLine: {
+            lineStyle: {
+              type: 'dashed',
+              color: '#eee'
+            }
+          },
+          min: 0,
+          max: 100,
+          axisLine: {
+            lineStyle: { color: '#999' }
+          }
+        },
+        series: series,
         grid: {
           left: '5%',
           right: '5%',
-          bottom: '15%',
+          bottom: '10%',
           containLabel: true
+        }
+      };
+
+      this.scatterChart = echarts.init(this.$refs.scatterChart);
+      this.scatterChart.setOption(scatterOption);
+    },
+    
+    initBoxplotChart() {
+      // 处理箱线图数据
+      const processedBoxplotData = echarts.dataTool.prepareBoxplotData(this.boxplotData);
+      
+      const boxplotOption = {
+          title: {
+          text: '2020-2025分数线箱线图',
+          left: 'center',
+          textStyle: {
+            fontSize: 16,
+            fontWeight: 'bold',
+            color: '#333'
+          }
+        },
+        tooltip: {
+          trigger: 'item',
+          axisPointer: {
+            type: 'shadow'
+          }
+        },
+        grid: {
+          left: '50',
+          right: '20',
+          top: '50',
+          bottom: '40',
         },
         xAxis: {
           type: 'category',
-          data: this.mainChartLabels,
-          axisLabel: { 
-            // formatter: 'data',             
-            rotate: 45, // 标签旋转角度
-            interval: 0, // 强制显示所有标签
-            color: '#333',
-            fontSize: 12}
+          data: this.boxplotNames,
+          axisLabel: {
+            color: '#777777',
+            textStyle: {
+              fontSize: '13'
+            },
+            rotate: 45, // 旋转标签避免重叠
+            interval: 0 // 强制显示所有标签
+          },
+          axisTick: {
+            show: false,
+          },
+          axisLine: {
+            lineStyle: {
+              color: '#333333',
+            }
+          },
+          splitLine: {
+            show: false
+          }
         },
         yAxis: {
           type: 'value',
-          name: '分数',
-          splitArea: { show: true }
-        }
-      });
-    },
-
-    updateChartOptions(chartInstance, processedData, seriesName) {
-      if (!processedData) return;
-      
-      chartInstance.setOption({
-        xAxis: { data: processedData.axisData },
-        series: [
-          {
-            name: seriesName,
-            type: 'boxplot',
-            data: processedData.boxData,
-            tooltip: {
-              formatter: (param) => [
-                `${seriesName} ${param.name}:`,
-                `最高分: ${param.data[5]}`,
-                // `上四分位数: ${param.data[4]}`,
-                `中位数: ${param.data[3]}`,
-                // `下四分位数: ${param.data[2]}`,
-                `最低分: ${param.data[1]}`
-              ].join('<br/>')
+          name: '分数（分）',
+          nameTextStyle: {
+            color: '#777777',
+            fontSize: 13,
+            padding: [0, 0, 0, 60]
+          },
+          axisLabel: {
+            color: '#777777',
+            textStyle: {
+              fontSize: '13'
+            },
+          },
+          axisTick: {
+            show: false,
+          },
+          axisLine: {
+            lineStyle: {
+              color: '#333333',
             }
           },
-          // {
-          //   name: '异常值',
-          //   type: 'scatter',
-          //   data: processedData.outliers
-          //}
+          splitLine: {
+            lineStyle: {
+              color: '#D1D1D1',
+            },
+          },
+          min:200,
+          max:450
+        },
+        series: [
+          {
+            name: '箱线图',
+            type: 'boxplot',
+            data: processedBoxplotData.boxData,
+            itemStyle: {
+              normal: {
+                borderColor: '#4B96F3',
+                borderWidth: 2,
+                color: 'rgba(75, 150, 243, 0.1)',
+              }
+            },
+            tooltip: {
+              formatter: function(param) {
+                return [
+                  `${param.name}:`,
+                  '最高分: ' + param.data[5] + ' 分',
+                  '中位数: ' + param.data[3] + ' 分',
+                  '最低分: ' + param.data[1] + ' 分'
+                ].join('<br/>')
+              }
+            }
+          },
+          {
+            // name: '异常值',
+            // type: 'scatter',
+            // symbolSize: 10,
+            // data: this.boxplotOutliers,
+            // itemStyle: {
+            //   normal: {
+            //     color: 'rgba(75,150,243,.7)',
+            //   }
+            // },
+            label: {
+              show: true,
+              position: 'top',
+              formatter: function(param) {
+                return param.data[2];
+              }
+            },
+          }
         ]
-      });
-    },
+      };
 
-    resizeCharts() {
-      this.chart?.resize();
-      this.comparisonChart?.resize();
+      this.boxplotChart = echarts.init(this.$refs.boxplotChart);
+      this.boxplotChart.setOption(boxplotOption);
+    },
+    
+    handleResize() {
+      if (this.scatterChart) this.scatterChart.resize();
+      if (this.boxplotChart) this.boxplotChart.resize();
+    },
+    
+    getLighterColor(color) {
+      const rgba = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+),\s*(\d+\.?\d*)\)/);
+      if (rgba) {
+        const r = parseInt(rgba[1]);
+        const g = parseInt(rgba[2]);
+        const b = parseInt(rgba[3]);
+        const a = rgba[4];
+        
+        const lighterR = Math.min(r + 30, 255);
+        const lighterG = Math.min(g + 30, 255);
+        const lighterB = Math.min(b + 30, 255);
+        
+        return `rgba(${lighterR}, ${lighterG}, ${lighterB}, ${a})`;
+      }
+      return color;
     }
   }
 };
 </script>
 
 <style scoped>
-.boxplot-container {
+.dual-chart-container {
   display: flex;
   justify-content: space-between;
   gap: 20px;
@@ -350,13 +349,24 @@ export default {
 .chart-wrapper {
   flex: 1;
   min-width: 300px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+}
+
+.error-message {
+  color: red;
+  margin-top: 10px;
+  font-size: 14px;
 }
 
 /* 响应式设计 */
 @media (max-width: 768px) {
-  .boxplot-container {
+  .dual-chart-container {
     flex-direction: column;
     gap: 30px;
   }
 }
 </style>
+
