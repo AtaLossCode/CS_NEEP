@@ -196,7 +196,7 @@ export default {
         },
         geo: {
           map: 'china',
-          roam: false,
+          roam: true,
           zoom: 1.2,
           layoutCenter: ['50%', '70%'],
           layoutSize: '114%',
@@ -205,15 +205,37 @@ export default {
             borderColor: 'rgba(24,144,255,1)',
             borderWidth: 1.5,
           },
+          emphasis: {
+            itemStyle: {
+              areaColor: '#0050b3',
+              borderColor: '#fff',
+              borderWidth: 1,
+            },
+            label:{
+              show:false,
+              // textStyle:{
+              //   color: '#d4d3ce',
+              // }
+            }
+          },
+          select: {
+            itemStyle: {
+              areaColor: '#0050b3',
+            },
+            label:{
+              show:false,
+            }
+          },
         },
         series: [
           {
             type: 'map',
-            map: 'china',
-            zoom: 1.2,
-            layoutCenter: ['50%', '70%'],
-            layoutSize: '114%',
-            selectedMode: false,
+            // map: 'china',
+            // zoom: 1.2,
+            // layoutCenter: ['50%', '70%'],
+            // layoutSize: '114%',
+            // selectedMode: false,
+            geoIndex: 0, // 🔁 使用 geo 坐标系
             data: [
               { name: '北京市', value: 30000 },
               { name: '天津市', value: 15000 },
@@ -234,28 +256,28 @@ export default {
               { name: '陕西省', value: 20000 },
               { name: '甘肃省', value: 5000 },
             ],
-            itemStyle: {
-              areaColor: '#e0f3ff',
-              borderColor: 'rgba(24,144,255,1)',
-              borderWidth: 1.5,
-              shadowColor: 'rgba(0,0,0,0.1)',
-              shadowBlur: 2,
-              shadowOffsetY: 2,
-            },
-            emphasis: {
-              itemStyle: {
-                areaColor: null,
-                borderColor: 'rgba(255,255,255,0.8)',
-                borderWidth: 2,
-              },
-            },
-            select: {
-              itemStyle: {
-                areaColor: null,
-                borderColor: 'rgba(255,255,255,0.8)',
-                borderWidth: 2,
-              },
-            },
+            // itemStyle: {
+            //   areaColor: '#e0f3ff',
+            //   borderColor: 'rgba(24,144,255,1)',
+            //   borderWidth: 1.5,
+            //   shadowColor: 'rgba(0,0,0,0.1)',
+            //   shadowBlur: 2,
+            //   shadowOffsetY: 2,
+            // },
+            // emphasis: {
+            //   itemStyle: {
+            //     areaColor: '#0050b3',
+            //     borderColor: 'rgba(255,255,255,0.8)',
+            //     borderWidth: 2,
+            //   },
+            // },
+            // select: {
+            //   itemStyle: {
+            //     areaColor: '#0050b3',
+            //     borderColor: 'rgba(255,255,255,0.8)',
+            //     borderWidth: 2,
+            //   },
+            // },
           },
           {
             type: 'scatter',
@@ -331,6 +353,12 @@ export default {
           !chartDom.value.contains(event.target)
         ) {
           showMenu.value = false;
+          //取消地图选中状态
+          chart.dispatchAction({
+            type: 'unselect',
+            seriesIndex: 0,
+            name: selectedProvince.value
+          });
         }
       };
       document.addEventListener('click', handleDocumentClick);
