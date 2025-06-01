@@ -30,19 +30,22 @@
 </template>
 
 <script>
+import zhuminImg from '../../assets/zhumin.png';
+import lvImg from '../../assets/Lv.png';
+import zlImg from '../../assets/zl.png';
 export default {
   name: 'FourImageCards',
   data() {
     return {
       cards: [
         {
-          imageUrl: 'https://cs.scu.edu.cn/__local/0/56/ED/EEA7B69761D4ED0A03AA42D0B84_AAAF15C8_37FC.jpg',
+          imageUrl: zhuminImg,
           title: '朱敏',
           description: '研究方向：信息可视化与可视分析，图像处理，生物信息学',
           linkUrl: 'https://cs.scu.edu.cn/info/1279/13673.htm'
         },
         {
-          imageUrl: 'https://cs.scu.edu.cn/__local/E/80/FE/8F6FB800E10CF430E3D2D068504_4F21531E_236B3F.jpg',
+          imageUrl: lvImg,
           title: '吕建成',
           description: '研究方向： 人工智能、数据科学、软件智能',
           linkUrl: 'https://cs.scu.edu.cn/info/1303/13767.htm'
@@ -54,7 +57,7 @@ export default {
           linkUrl: 'https://cs.scu.edu.cn/info/1282/17597.htm'
         },
         {
-          imageUrl: 'https://cs.scu.edu.cn/__local/C/87/8E/90E3DE52F25BACD50F6BF1405A6_AB3736F3_27548B.jpg',
+          imageUrl: zlImg,
           title: '章乐',
           description: '研究方向：在基因层面，为基础医学和生物学研究，提供基于人工智能技术的分析工具。在蛋白质层面，为细胞信号通路和药学分子对接，提供基于人工智能技术的分析工具。在组织层面，为疾病的预防诊断，提供基于人工智能技术的影像和自然语言分析工具。',
           linkUrl: 'https://cs.scu.edu.cn/info/1291/13640.htm'
