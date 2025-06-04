@@ -1,3 +1,4 @@
+```vue
 <template>
   <div class="compare-chart module-inner">
     <div class="item">
@@ -5,7 +6,7 @@
       <div class="number">
         <span class="value">{{ formattedExamCount }}</span>
         <span class="change up">{{ formattedExamChange }}</span>
-        <span class="unit">万人</span>
+        <span class="unit">{{ universityData ? '人' : '万人' }}</span>
       </div>
     </div>
     <div class="item">
@@ -22,26 +23,45 @@
 <script>
 export default {
   name: 'CompareChart',
+  props: {
+    universityData: {
+      type: Object,
+      default: null
+    }
+  },
   data() {
     return {
-      examCount: 45.8,
-      examChange: 2.3,
-      scoreLine: 310,
-      scoreChange: 1.5
+      defaultExamCount: 45.8, // 默认报考人数（单位：万人）
+      defaultExamChange: '+2.3%', // 默认报考人数变化（百分比）
+      defaultScoreLine: 268, // 默认分数线
+      defaultScoreChange: '+0%' // 默认分数线变化（百分比）
     };
   },
   computed: {
+    examCount() {
+      return this.universityData ? this.universityData.examCount : this.defaultExamCount * 10000;
+    },
+    examChange() {
+      return this.universityData ? this.universityData.examChange : this.defaultExamChange;
+    },
+    scoreLine() {
+      return this.universityData ? this.universityData.scoreLine : this.defaultScoreLine;
+    },
+    scoreChange() {
+      return this.universityData ? this.universityData.scoreChange : this.defaultScoreChange;
+    },
     formattedExamCount() {
-      return this.examCount.toFixed(1);
+      // 如果是四川大学的数据，显示原始人数；否则显示万为单位
+      return this.universityData ? this.examCount : (this.examCount / 10000).toFixed(1);
     },
     formattedExamChange() {
-      return `▲${this.examChange.toFixed(1)}%`;
+      return this.examChange;
     },
     formattedScoreLine() {
       return this.scoreLine;
     },
     formattedScoreChange() {
-      return `▲${this.scoreChange.toFixed(1)}%`;
+      return this.scoreChange;
     }
   }
 };
@@ -57,11 +77,10 @@ export default {
   gap: 10px;
   background-color: #F5F5F5;
   box-sizing: border-box;
-  
 }
 
 .item {
-  border:#5C93D1;
+  border: #5C93D1;
   width: 100%;
   height: 100%;
   display: flex;

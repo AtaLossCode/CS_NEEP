@@ -36,7 +36,7 @@
           <Subject />
         </div>
         <div class="module-box compare-box">
-          <Compare />
+          <Compare :university-data="hoveredUniversityData" />
         </div>
       </div>
     </div>
@@ -196,7 +196,7 @@ export default {
 
 /* 修复Compare模块的边框问题 */
 .compare-box {
-  border: 2px solid #F5F5F5; /* 与其他模块一致 */
+  border: 2px solid #5C93D1; /* 与其他模块一致 */
   padding: 0px; /* 减小内边距 */
 }
 

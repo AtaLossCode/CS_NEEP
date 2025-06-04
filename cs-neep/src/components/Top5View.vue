@@ -27,34 +27,34 @@ export default {
   components: { VChart },
   data() {
     return {
-      selectedYear: '2024',
-      years: ['2020', '2021', '2022', '2023', '2024'],
+      selectedYear: '2023',
+      years: ['2020', '2021', '2022', '2023'],
       dataByYear: {
         2020: {
-          projects: ['项目1', '项目2', '项目3', '项目4', '项目5'],
+          projects: ['清华大学', '浙江大学', '北京大学', '上海交通大学', '华中科技大学'],
           admitted: [300, 280, 270, 310, 350],
-          notAdmitted: [150, 140, 130, 120, 110],
+          notAdmitted: [1500, 1400, 1300, 1200, 1100],
         },
         2021: {
-          projects: ['项目1', '项目2', '项目3', '项目4', '项目5'],
+          projects: ['清华大学', '北京大学', '浙江大学', '上海交通大学', '华中科技大学'],
           admitted: [310, 290, 280, 320, 360],
-          notAdmitted: [140, 130, 120, 110, 100],
+          notAdmitted: [1400, 1300, 1200, 1100, 1000],
         },
         2022: {
-          projects: ['项目1', '项目2', '项目3', '项目4', '项目5'],
+          projects: ['清华大学', '北京大学', '浙江大学', '复旦大学', '南京大学'],
           admitted: [320, 302, 301, 334, 390],
-          notAdmitted: [120, 132, 101, 134, 90],
+          notAdmitted: [1200, 1320, 1010, 1340, 900],
         },
         2023: {
-          projects: ['项目1', '项目2', '项目3', '项目4', '项目5'],
+          projects: ['清华大学', '北京大学', '上海交通大学', '浙江大学', '中国科学技术大学'],
           admitted: [330, 310, 305, 340, 400],
-          notAdmitted: [110, 125, 115, 130, 95],
+          notAdmitted: [1100, 1250, 1150, 1300, 950],
         },
-        2024: {
-          projects: ['项目1', '项目2', '项目3', '项目4', '项目5'],
-          admitted: [340, 320, 310, 350, 410],
-          notAdmitted: [100, 120, 110, 125, 85],
-        },
+        // 2024: {
+        //   projects: ['项目1', '项目2', '项目3', '项目4', '项目5'],
+        //   admitted: [340, 320, 310, 350, 410],
+        //   notAdmitted: [100, 120, 110, 125, 85],
+        // },
       },
     };
   },
@@ -66,7 +66,7 @@ export default {
         legend: { data: ['录取人数', '未录取人数'], bottom: '0.5%' },
         grid: { left: '3%', right: '4%', bottom: '10%', containLabel: true },
         xAxis: { type: 'value', name: '人数' },
-        yAxis: { type: 'category', name: '项目', data: data.projects },
+        yAxis: { type: 'category', name: '院校', data: data.projects },
         series: [
           {
             name: '录取人数',
