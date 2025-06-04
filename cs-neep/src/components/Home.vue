@@ -21,7 +21,7 @@
       <!-- 中间部分：宽度 50% -->
       <div class="center-col">
         <div class="module-box map-box">
-          <Map />
+          <Map @hover-university="handleHoverUniversity" />
         </div>
         <div class="module-box score-box">
           <Score />
@@ -30,7 +30,7 @@
       <!-- 右侧部分：宽度 25% -->
       <div class="right-col">
         <div class="module-box words-box">
-          <Words />
+          <Words :university-data="hoveredUniversityData" />
         </div>
         <div class="module-box subject-box">
           <Subject />
@@ -62,6 +62,16 @@ export default {
     Words,
     Subject,
     Compare
+  },
+  data() {
+    return {
+      hoveredUniversityData: null
+    }
+  },
+  methods: {
+    handleHoverUniversity(data) {
+      this.hoveredUniversityData = data;
+    }
   }
 }
 </script>

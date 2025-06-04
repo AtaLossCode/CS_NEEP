@@ -39,7 +39,8 @@ export default {
     AListItem: List.Item,
     StarOutlined,
   },
-  setup() {
+  emits: ['hover-university'],
+  setup(props, { emit }) {
     const chartDom = ref(null);
     const menuDom = ref(null);
     const showMenu = ref(false);
@@ -89,6 +90,17 @@ export default {
       { name: '中央民族大学', province: '北京市', coords: [116.320486, 39.950567] },
       { name: '西北农林科技大学', province: '陕西省', coords: [108.063431, 34.263566] },
     ];
+
+    // 模拟四川大学报考数据
+    const universityData = {
+      '四川大学': {
+        '电子信息': 699,
+        '网络空间安全': 103,
+        '智能科学与技术': 25,
+        '软件工程': 68,
+        '计算机科学与技术': 204
+      }
+    };
 
     // 一组易区分的颜色
     const colors = [
@@ -211,31 +223,23 @@ export default {
               borderColor: '#fff',
               borderWidth: 1,
             },
-            label:{
-              show:false,
-              // textStyle:{
-              //   color: '#d4d3ce',
-              // }
+            label: {
+              show: false,
             }
           },
           select: {
             itemStyle: {
               areaColor: '#0050b3',
             },
-            label:{
-              show:false,
+            label: {
+              show: false,
             }
           },
         },
         series: [
           {
             type: 'map',
-            // map: 'china',
-            // zoom: 1.2,
-            // layoutCenter: ['50%', '70%'],
-            // layoutSize: '114%',
-            // selectedMode: false,
-            geoIndex: 0, // 🔁 使用 geo 坐标系
+            geoIndex: 0,
             data: [
               { name: '北京市', value: 30000 },
               { name: '天津市', value: 15000 },
@@ -256,28 +260,6 @@ export default {
               { name: '陕西省', value: 20000 },
               { name: '甘肃省', value: 5000 },
             ],
-            // itemStyle: {
-            //   areaColor: '#e0f3ff',
-            //   borderColor: 'rgba(24,144,255,1)',
-            //   borderWidth: 1.5,
-            //   shadowColor: 'rgba(0,0,0,0.1)',
-            //   shadowBlur: 2,
-            //   shadowOffsetY: 2,
-            // },
-            // emphasis: {
-            //   itemStyle: {
-            //     areaColor: '#0050b3',
-            //     borderColor: 'rgba(255,255,255,0.8)',
-            //     borderWidth: 2,
-            //   },
-            // },
-            // select: {
-            //   itemStyle: {
-            //     areaColor: '#0050b3',
-            //     borderColor: 'rgba(255,255,255,0.8)',
-            //     borderWidth: 2,
-            //   },
-            // },
           },
           {
             type: 'scatter',
@@ -340,6 +322,19 @@ export default {
           showMenu.value = true;
 
           console.log('Clicked region:', province, 'Universities:', selectedUniversities.value);
+        }
+      });
+
+      // 添加鼠标悬浮事件
+      chart.on('mouseover', (params) => {
+        if (params.componentType === 'series' && params.seriesType === 'scatter' && params.name === '四川大学') {
+          emit('hover-university', universityData['四川大学']);
+        }
+      });
+
+      chart.on('mouseout', (params) => {
+        if (params.componentType === 'series' && params.seriesType === 'scatter' && params.name === '四川大学') {
+          emit('hover-university', null);
         }
       });
 
