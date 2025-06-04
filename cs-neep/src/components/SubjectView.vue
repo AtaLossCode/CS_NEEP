@@ -8,6 +8,10 @@
 import * as echarts from 'echarts';
 
 export default {
+  props: {
+    
+    universityName: String // 新增：接收大学名称
+  },
   name: "PieChart",
   data() {
     return {
@@ -37,9 +41,23 @@ export default {
         { name: '复旦大学', value: 362 },
         { name: '天津大学', value: 340 },
         { name: '华南理工大学', value: 324 }
-      ]
+      ],
+      chart: null
     };
   },
+  watch: {
+  universityName(newName) {
+    if (this.chart && newName) {
+      this.highlightUniversity(newName);
+
+    }
+    else {
+        // 当名称为空时，取消所有高亮
+        this.chart.dispatchAction({ type: 'downplay', seriesIndex: 0 });
+        this.chart.dispatchAction({ type: 'hideTip' });
+      }
+  }
+},
   mounted() {
     this.initPie();
     window.addEventListener('resize', this.resizeChart);
@@ -64,7 +82,30 @@ export default {
               fontSize: 12 // 减小标题字体
             }
           },
-          tooltip: {},
+          tooltip: {
+            trigger: 'item',
+            formatter: (params) => {
+              const university = this.xy_data.find(item => item.name === params.name);
+              if (university) {
+                return `
+                  <div style="font-weight:bold;">${university.name}</div>
+                  <div>软科评估得分: ${university.value}</div>
+                  <div>排名: ${this.xy_data.indexOf(university) + 1}</div>
+                `;
+              }
+              return params.name;
+            },
+            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+            borderColor: '#ccc',
+            borderWidth: 1,
+            confine: true,
+            padding: 10,
+            textStyle: {
+              color: '#333'
+            }
+            
+          },
+          
           series: [
             {
               stillShowZeroSum: true,
@@ -90,7 +131,28 @@ export default {
     },
     resizeChart() {
       this.chart && this.chart.resize();
-    }
+    },
+    highlightUniversity(universityName) {
+          // 1. 取消所有高亮
+          this.chart.dispatchAction({ type: 'downplay', seriesIndex: 0 });
+          
+          // 2. 查找目标索引
+          const dataIndex = this.xy_data.findIndex(item => item.name === universityName);
+          
+          // 3. 高亮目标
+          if (dataIndex !== -1) {
+            this.chart.dispatchAction({
+              type: 'highlight',
+              seriesIndex: 0,
+              dataIndex: dataIndex
+            });
+            this.chart.dispatchAction({
+              type: 'showTip',
+              seriesIndex: 0,
+              dataIndex: dataIndex
+            });
+          }
+        }
   }
 };
 </script>

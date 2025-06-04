@@ -21,7 +21,7 @@
       <!-- 中间部分：宽度 50% -->
       <div class="center-col">
         <div class="module-box map-box">
-          <Map @hover-university="handleHoverUniversity" />
+          <Map @hover-university="handleHoverUniversity" @hover-university-name="handleHoverUniversityName"/>
         </div>
         <div class="module-box score-box">
           <Score />
@@ -33,7 +33,7 @@
           <Words :university-data="hoveredUniversityData" />
         </div>
         <div class="module-box subject-box">
-          <Subject />
+          <Subject :university-name="hoveredUniversityName" />
         </div>
         <div class="module-box compare-box">
           <Compare :university-data="hoveredUniversityData" />
@@ -65,13 +65,21 @@ export default {
   },
   data() {
     return {
-      hoveredUniversityData: null
+      hoveredUniversityData: null,
+       hoveredUniversityName: null
     }
   },
   methods: {
     handleHoverUniversity(data) {
       this.hoveredUniversityData = data;
+    },
+    handleHoverUniversityName(name) {
+      this.hoveredUniversityName = name;
+      console.log('当前悬浮大学：', name);
+
     }
+    // 辅助方法：根据大学名称查找完整数据
+
   }
 }
 </script>
