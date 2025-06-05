@@ -166,9 +166,9 @@ export default {
       ],
       
       // 考研数据
-      applyCount: 2856,
-      admitCount: 1371,
-      ratio: 0.48,
+      applyCount: 971,
+      admitCount: 137,
+      ratio: 0.14109,
       
       // 图表和加载状态
       liquidChart: null,
