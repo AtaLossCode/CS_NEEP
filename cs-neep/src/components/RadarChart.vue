@@ -24,7 +24,7 @@ export default {
         legend: {
           show: true,
           bottom: '5%',
-          data: ['沿海地区', '中部地区', '西部地区'],
+          data: ['东部地区', '中部地区', '西部地区'],
           orient: 'horizontal',
           icon: 'circle',
           itemWidth: 14,
@@ -59,8 +59,8 @@ export default {
             symbolSize: 4,
             data: [
               {
-                value: [88, 15, 92, 60, 85],
-                name: '沿海地区',
+                value: [88, 46, 85, 85, 80],
+                name: '东部地区',
                 lineStyle: { width: 1, color: 'rgba(63,177,227,1)' },
                 itemStyle: { color: 'rgba(63,177,227,1)', shadowColor: 'rgba(63,177,227,1)', shadowBlur: 10 },
                 areaStyle: {
@@ -76,7 +76,7 @@ export default {
                 }
               },
               {
-                value: [100, 65, 90, 15, 75],
+                value: [92, 36, 95, 83, 82],
                 name: '中部地区',
                 lineStyle: { width: 1, color: 'rgba(107,230,193,1)' },
                 itemStyle: { color: 'rgba(107,230,193,1)', shadowColor: 'rgba(107,230,193,1)', shadowBlur: 10 },
@@ -93,7 +93,7 @@ export default {
                 }
               },
               {
-                value: [60, 55, 70, 80, 65],
+                value: [86, 20, 88, 80, 78],
                 name: '西部地区',
                 lineStyle: { width: 1, color: '#FFD1BB' },
                 itemStyle: { color: '#FFD1BB', shadowColor: '#FFD1BB', shadowBlur: 10 },
